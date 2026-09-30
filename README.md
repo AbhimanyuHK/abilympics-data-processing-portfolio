@@ -184,3 +184,9 @@ GitHub: https://github.com/AbhimanyuHK
 ---
 
 *Built for disciplined preparation, measurable practice, and a strong evidence-based data processing portfolio.*
+
+## Portfolio Readiness
+
+The repository is ready to share as a **practice/portfolio repository** now. It demonstrates the intended workflow through SQL, datasets, Excel processing, validation, reporting, timed mock tasks, and detailed Access/LibreOffice Base implementation specifications.
+
+Remaining items are execution evidence rather than missing design: create and test the `.accdb`/`.odb` locally, complete one full 180-minute mock run, and add screenshots/results. Present these as practice evidence, not official competition deliverables.
