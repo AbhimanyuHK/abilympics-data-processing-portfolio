@@ -1,39 +1,49 @@
-# LibreOffice Base Build Guide
+# LibreOffice Base — Execution Runbook
 
-## Target
+## Objective
 
-Build a complete reservation database using LibreOffice Base.
+Build the reservation database from the repository's canonical CSV pack, then verify queries, forms, reports, and reconciliation under timed conditions.
 
-## Recommended sequence
+## 1. Create the database
 
-### 0–10 minutes
-Create database and import source tables.
+Create a new Base database named `abilympics_reservation_practice.odb`.
 
-### 10–20 minutes
-Configure data types, primary keys, indexes, and relationships.
+## 2. Import tables
 
-### 20–40 minutes
-Build required queries.
+Import in dependency order: country.csv, member.csv, travel.csv, airline.csv, schedule.csv, reservation.csv.
 
-### 40–55 minutes
-Build member/reservation forms.
+During import preserve headers, choose appropriate numeric/date/time/text types, do not auto-generate existing IDs, and verify row counts immediately.
 
-### 55–70 minutes
-Build reports and administrator navigation.
+Expected baseline counts: COUNTRY 6; MEMBER 8; TRAVEL 6; AIRLINE 6; SCHEDULE 6; RESERVATION 12.
 
-### 70–80 minutes
-Run validation and reconciliation.
+## 3. Configure structure
 
-Initial target: 80 minutes.
+Apply `database/schema/travel-reservation-schema.md`. Create primary keys first, then foreign-key relationships and useful indexes. Do not redesign the business model merely to fit the GUI.
 
-After several repetitions, target 60 minutes.
+## 4. Build queries
 
-## Cross-platform practice
+Use `libreoffice-base/queries/query-implementation-checklist.md`. Save Q01–Q10 before reports. Keep DQ01–DQ05 separate so analytical queries do not silently clean or discard records.
 
-The same logical model should be reproducible in:
-- PostgreSQL/SQL
-- Microsoft Access
-- LibreOffice Base
-- Excel-based processing
+## 5. Build forms
 
-Do not make database-specific shortcuts that change the business meaning of the model.
+Implement F01–F04 from `libreoffice-base/forms/README.md`. Prefer combo/list controls for foreign keys and prioritize functional usability over decoration.
+
+## 6. Build reports
+
+Implement the seven reports from `libreoffice-base/reports/README.md`. Every report must use a saved query as its source.
+
+## 7. Final verification
+
+Record row counts, relationship integrity, query execution, form create/search/update tests, report totals, and data-quality results. Reconcile the accepted clean dataset against baseline counts before finishing.
+
+## 8. Timed targets
+
+First build: 80 minutes.
+
+After repetition: import/structure 20 min; queries 20 min; forms 10 min; reports/navigation 10 min; validation 5 min.
+
+Target: **65 minutes**, leaving contingency for competition-day differences.
+
+## Important limitation
+
+The repository provides the reproducible specification and source data. The actual `.odb` file should be created and tested in a local LibreOffice environment rather than represented as a documentation-only artifact.
