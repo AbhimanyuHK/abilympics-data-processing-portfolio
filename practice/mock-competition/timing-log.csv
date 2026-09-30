@@ -1,2 +1,0 @@
-attempt_id,start_time,end_time,duration_minutes,database_minutes,data_cleaning_minutes,sql_minutes,excel_minutes,access_minutes,report_minutes,validation_minutes,issues,score,notes
-1,,,,,,,,,,,,,,
