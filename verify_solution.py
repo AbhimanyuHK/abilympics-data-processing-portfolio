@@ -36,7 +36,15 @@ def execute_sql_script(connection, path):
             if statement:
                 statements.append(statement)
 
-    if buffer.strip():
+    # A SQL script may legitimately end with documentation-only comments.
+    # sqlite3.complete_statement() keeps those comments in the buffer because
+    # they are not executable statements. Only reject remaining non-comment
+    # content as an actual unterminated SQL statement.
+    remainder = "\n".join(
+        line for line in buffer.splitlines()
+        if line.strip() and not line.lstrip().startswith("--")
+    ).strip()
+    if remainder:
         raise VerificationError("unterminated SQL in {}".format(path))
 
     results = []
