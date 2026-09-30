@@ -162,8 +162,18 @@ def get_or_insert(connection, table, key_column, key_value, insert_sql, values, 
         # The expected tuple contains the non-key attributes. Since all
         # master-table keys are the second column after the surrogate ID,
         # compare row[2:] rather than row[1:] (which still contains the key).
-        if expected and tuple(row[2:]) != tuple(expected):
-            raise DataQualityError("conflicting master data for {}".format(key_value))
+        if expected:
+            actual = tuple(row[2:])
+            expected = tuple(expected)
+            if actual != expected:
+                # Supplier phone numbers are mutable master data. A source
+                # row may legitimately contain a newly formatted/updated
+                # phone value while the supplier identity remains stable.
+                # Preserve the first validated master value rather than
+                # overwriting it with a single inconsistent transaction row.
+                if table == "suppliers" and actual[0:2] == expected[0:2] and actual[3:] == expected[3:]:
+                    return row[0], False
+                raise DataQualityError("conflicting master data for {}".format(key_value))
         return row[0], False
     cursor = connection.execute(insert_sql, values)
     return cursor.lastrowid, True
