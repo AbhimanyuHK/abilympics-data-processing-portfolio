@@ -4,6 +4,18 @@ CREATE TABLE country (
     country_name VARCHAR(100) NOT NULL UNIQUE
 );
 
+CREATE TABLE member_status (
+    status_id SMALLINT PRIMARY KEY,
+    status_code VARCHAR(20) NOT NULL UNIQUE,
+    status_name VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE reservation_status (
+    status_id SMALLINT PRIMARY KEY,
+    status_code VARCHAR(20) NOT NULL UNIQUE,
+    status_name VARCHAR(50) NOT NULL UNIQUE
+);
+
 CREATE TABLE member (
     member_id INTEGER PRIMARY KEY,
     first_name VARCHAR(60) NOT NULL,
@@ -11,7 +23,7 @@ CREATE TABLE member (
     email VARCHAR(150) NOT NULL UNIQUE,
     country_id INTEGER NOT NULL REFERENCES country(country_id),
     membership_date DATE NOT NULL,
-    status VARCHAR(20) NOT NULL CHECK (status IN ('ACTIVE', 'INACTIVE'))
+    status_id SMALLINT NOT NULL REFERENCES member_status(status_id)
 );
 
 CREATE TABLE travel (
@@ -45,13 +57,15 @@ CREATE TABLE reservation (
     member_id INTEGER NOT NULL REFERENCES member(member_id),
     schedule_id INTEGER NOT NULL REFERENCES schedule(schedule_id),
     reservation_date DATE NOT NULL,
-    status VARCHAR(20) NOT NULL CHECK (status IN ('RESERVED', 'CANCELLED', 'COMPLETED')),
+    status_id SMALLINT NOT NULL REFERENCES reservation_status(status_id),
     seat_number VARCHAR(10)
 );
 
 CREATE INDEX idx_member_country ON member(country_id);
+CREATE INDEX idx_member_status ON member(status_id);
 CREATE INDEX idx_travel_country ON travel(country_id);
 CREATE INDEX idx_schedule_travel ON schedule(travel_id);
 CREATE INDEX idx_schedule_airline ON schedule(airline_id);
 CREATE INDEX idx_reservation_member ON reservation(member_id);
 CREATE INDEX idx_reservation_schedule ON reservation(schedule_id);
+CREATE INDEX idx_reservation_status ON reservation(status_id);
