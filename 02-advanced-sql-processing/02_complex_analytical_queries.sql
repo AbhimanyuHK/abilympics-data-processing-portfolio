@@ -67,22 +67,17 @@ ORDER BY total_spend DESC, supplier_code, category_code;
 -- Expected output:
 -- | supplier_code | supplier_name                  | category_code | category_name   | order_count | units_ordered | total_spend |
 -- |---------------|--------------------------------|---------------|-----------------|-------------|---------------|-------------|
--- | SUP002        | Vertex Tools & Hardware        | CAT02         | Hardware        | 2           | 25            | 38980.00    |
--- | SUP004        | Northstar Components           | CAT04         | Electrical      | 2           | 44            | 41650.00    |
--- | SUP001        | Acme Industrial Supplies       | CAT01         | Office Supplies | 2           | 120           | 34440.00    |
--- | SUP005        | Prime Industrial Packaging     | CAT03         | Packaging       | 2           | 75            | 21950.00    |
--- | SUP003        | GreenField Office Mart         | CAT01         | Office Supplies | 2           | 91            | 20400.00    |
+-- | SUP002        | Vertex Tools & Hardware        | CAT02         | Hardware        | 3           | 35            | 80760.00    |
+-- | SUP004        | Northstar Components           | CAT04         | Electrical      | 2           | 44            | 80335.00    |
+-- | SUP005        | Prime Industrial Packaging     | CAT03         | Packaging       | 2           | 75            | 39700.00    |
+-- | SUP003        | GreenField Office Mart         | CAT01         | Office Supplies | 2           | 91            | 23550.00    |
+-- | SUP001        | Acme Industrial Supplies       | CAT05         | Cleaning        | 2           | 22            | 13490.00    |
+-- | SUP001        | Acme Industrial Supplies       | CAT01         | Office Supplies | 1           | 60            | 14300.00    |
 -- | SUP003        | GreenField Office Mart         | CAT03         | Packaging       | 1           | 30            | 2775.00     |
--- | SUP001        | Acme Industrial Supplies       | CAT05         | Cleaning        | 1           | 12            | 7440.00     |
--- | SUP002        | Vertex Tools & Hardware        | CAT02         | Hardware        | 2           | 13            | 26970.00    |
--- | SUP004        | Northstar Components           | CAT04         | Electrical      | 2           | 24            | 34225.00    |
--- | SUP005        | Prime Industrial Packaging     | CAT03         | Packaging       | 2           | 40            | 14500.00    |
--- | SUP003        | GreenField Office Mart         | CAT01         | Office Supplies | 2           | 85            | 18525.00    |
 --
--- Note: The query intentionally demonstrates the four-table join pattern.
--- Exact duplicate-looking supplier/category combinations are not expected
--- after grouping; the expected table above is illustrative of the business
--- dimensions and must be validated against the loaded dataset.
+-- The result is one row per supplier/category combination with transaction
+-- activity. The query's CROSS JOIN establishes the complete dimensional
+-- matrix; HAVING removes combinations with zero spend.
 
 -- ============================================================================
 -- QUERY 2 — Supplier fulfillment CTEs: lead time and on-time completion
@@ -147,11 +142,11 @@ ORDER BY completion_rate_pct DESC, supplier_code;
 -- Expected output:
 -- | supplier_code | supplier_name                  | total_orders | received_orders | open_orders | cancelled_orders | avg_received_lead_time_days | completion_rate_pct |
 -- |---------------|--------------------------------|--------------|-----------------|-------------|------------------|-----------------------------|---------------------|
--- | SUP003        | GreenField Office Mart         | 3            | 3               | 0           | 0                | 10.00                       | 100.00              |
+-- | SUP001        | Acme Industrial Supplies       | 3            | 2               | 0           | 1                | 7.00                        | 100.00              |
+-- | SUP003        | GreenField Office Mart         | 3            | 2               | 1           | 0                | 7.00                        | 100.00              |
+-- | SUP002        | Vertex Tools & Hardware        | 3            | 1               | 2           | 0                | 12.00                       | 33.33               |
+-- | SUP004        | Northstar Components           | 2            | 1               | 1           | 0                | 11.00                       | 50.00               |
 -- | SUP005        | Prime Industrial Packaging     | 2            | 1               | 1           | 0                | 9.00                        | 50.00               |
--- | SUP004        | Northstar Components           | 2            | 1               | 1           | 0                | 10.00                       | 50.00               |
--- | SUP002        | Vertex Tools & Hardware        | 3            | 1               | 2           | 0                | 21.00                       | 33.33               |
--- | SUP001        | Acme Industrial Supplies       | 4            | 2               | 1           | 1                | 7.00                        | 66.67               |
 
 -- ============================================================================
 -- QUERY 3 — Conditional category metrics
@@ -206,11 +201,11 @@ ORDER BY gross_spend DESC, c.category_code;
 -- Expected output:
 -- | category_code | category_name   | item_count | total_units_ordered | received_units | open_units | cancelled_units | gross_spend | received_spend |
 -- |---------------|-----------------|------------|---------------------|----------------|------------|-----------------|-------------|----------------|
--- | CAT04         | Electrical      | 2          | 44                  | 25             | 19         | 0               | 41650.00    | 34225.00       |
--- | CAT02         | Hardware        | 2          | 25                  | 20             | 5          | 0               | 38980.00    | 34240.00       |
--- | CAT01         | Office Supplies | 3          | 211                 | 151            | 60         | 0               | 52965.00    | 52965.00       |
--- | CAT03         | Packaging       | 3          | 100                 | 50             | 30         | 20              | 28950.00    | 18500.00       |
--- | CAT05         | Cleaning        | 1          | 12                  | 12             | 0          | 0               | 7440.00     | 7440.00        |
+-- | CAT04         | Electrical      | 2          | 44                  | 25             | 19         | 0               | 80335.00    | 45750.00       |
+-- | CAT02         | Hardware        | 2          | 35                  | 20             | 15         | 0               | 80760.00    | 48160.00       |
+-- | CAT03         | Packaging       | 3          | 105                 | 80             | 25         | 0               | 42475.00    | 28925.00       |
+-- | CAT01         | Office Supplies | 3          | 151                 | 145            | 6          | 0               | 37850.00    | 34490.00       |
+-- | CAT05         | Cleaning        | 1          | 22                  | 12             | 0          | 10              | 13490.00    | 7440.00        |
 
 -- ============================================================================
 -- QUERY 4 — Inventory depletion / restock exposure using pending PO quantity
@@ -272,19 +267,19 @@ ORDER BY
     item_code;
 
 -- Expected output:
--- | item_code | item_name               | category_code | category_name   | current_stock | reorder_level | pending_quantity | projected_stock | stock_status      |
--- |-----------|-------------------------|---------------|-----------------|---------------|---------------|-----------------|-----------------|-------------------|
--- | ITM003    | Cordless Drill          | CAT02         | Hardware        | 6             | 8             | 5               | 11              | RESTOCK_REQUIRED  |
--- | ITM007    | LED Panel 40W           | CAT04         | Electrical      | 10            | 15            | 15              | 25              | RESTOCK_REQUIRED  |
--- | ITM008    | Copper Cable 2.5mm      | CAT04         | Electrical      | 3             | 5             | 4               | 7               | RESTOCK_REQUIRED  |
--- | ITM011    | Surface Cleaner 5L      | CAT05         | Cleaning        | 8             | 10            | 0               | 8               | RESTOCK_REQUIRED  |
--- | ITM001    | A4 Copy Paper           | CAT01         | Office Supplies | 45            | 50            | 0               | 45              | RESTOCK_REQUIRED  |
--- | ITM002    | Ballpoint Pens          | CAT01         | Office Supplies | 90            | 100           | 0               | 90              | RESTOCK_REQUIRED  |
--- | ITM004    | Drill Bit Set           | CAT02         | Hardware        | 14            | 10            | 10              | 24              | HEALTHY           |
--- | ITM005    | Stapler Heavy Duty      | CAT01         | Office Supplies | 12            | 5             | 0               | 12              | HEALTHY           |
--- | ITM006    | Corrugated Box Large    | CAT03         | Packaging       | 25            | 20            | 0               | 25              | HEALTHY           |
--- | ITM009    | Stretch Film            | CAT03         | Packaging       | 30            | 20            | 10              | 40              | HEALTHY           |
--- | ITM010    | Packaging Tape          | CAT03         | Packaging       | 40            | 30            | 15              | 55              | HEALTHY           |
+-- | item_code | item_name               | category_code | category_name   | current_stock | reorder_level | pending_quantity | projected_stock | stock_status     |
+-- |-----------|-------------------------|---------------|-----------------|---------------|---------------|-----------------|-----------------|------------------|
+-- | ITM011    | Surface Cleaner 5L      | CAT05         | Cleaning        | 9             | 12            | 0               | 9               | RESTOCK_REQUIRED |
+-- | ITM005    | Stapler Heavy Duty      | CAT01         | Office Supplies | 14            | 8             | 6               | 20              | HEALTHY          |
+-- | ITM001    | A4 Copy Paper           | CAT01         | Office Supplies | 120           | 50            | 0               | 120             | HEALTHY          |
+-- | ITM002    | Ballpoint Pens          | CAT01         | Office Supplies | 80            | 30            | 0               | 80              | HEALTHY          |
+-- | ITM003    | Cordless Drill          | CAT02         | Hardware        | 18            | 10            | 5               | 23              | HEALTHY          |
+-- | ITM004    | Drill Bit Set           | CAT02         | Hardware        | 35            | 15            | 10              | 45              | HEALTHY          |
+-- | ITM006    | Corrugated Box Large    | CAT03         | Packaging       | 60            | 25            | 0               | 60              | HEALTHY          |
+-- | ITM009    | Stretch Film            | CAT03         | Packaging       | 40            | 18            | 10              | 50              | HEALTHY          |
+-- | ITM010    | Packaging Tape          | CAT03         | Packaging       | 55            | 20            | 15              | 70              | HEALTHY          |
+-- | ITM007    | LED Panel 40W           | CAT04         | Electrical      | 45            | 20            | 15              | 60              | HEALTHY          |
+-- | ITM008    | Copper Cable 2.5mm      | CAT04         | Electrical      | 16            | 10            | 4               | 20              | HEALTHY          |
 
 -- ============================================================================
 -- QUERY 5 — Cost variance versus category benchmark
@@ -356,16 +351,16 @@ LIMIT 10;
 -- Expected output:
 -- | supplier_code | supplier_name              | order_number | item_code | item_name          | category_code | unit_price | category_benchmark | unit_variance | extended_variance |
 -- |---------------|----------------------------|--------------|-----------|--------------------|---------------|------------|--------------------|---------------|-------------------|
--- | SUP004        | Northstar Components       | PO1005       | ITM008    | Copper Cable 2.5mm | CAT04         | 3850.00    | 3820.00            | 30.00         | 150.00            |
--- | SUP002        | Vertex Tools & Hardware    | PO1002       | ITM003    | Cordless Drill     | CAT02         | 4250.00    | 4220.00            | 30.00         | 240.00            |
--- | SUP001        | Acme Industrial Supplies   | PO1007       | ITM011    | Surface Cleaner 5L | CAT05         | 620.00     | 620.00             | 0.00          | 0.00             |
--- | SUP003        | GreenField Office Mart     | PO1009       | ITM001    | A4 Copy Paper      | CAT01         | 279.00     | 281.00             | -2.00         | -120.00           |
--- | SUP005        | Prime Industrial Packaging | PO1011       | ITM009    | Stretch Film       | CAT03         | 715.00     | 727.50             | -12.50        | -250.00           |
--- | SUP004        | Northstar Components       | PO1010       | ITM007    | LED Panel 40W      | CAT04         | 1295.00    | 1310.00            | -15.00        | -225.00           |
--- | SUP002        | Vertex Tools & Hardware    | PO1008       | ITM003    | Cordless Drill     | CAT02         | 4190.00    | 4220.00            | -30.00        | -150.00           |
--- | SUP003        | GreenField Office Mart     | PO1009       | ITM002    | Ballpoint Pens     | CAT01         | 138.00     | 141.50             | -3.50         | -87.50            |
--- | SUP005        | Prime Industrial Packaging | PO1006       | ITM010    | Packaging Tape     | CAT03         | 410.00     | 402.50             | 7.50          | 112.50            |
--- | SUP001        | Acme Industrial Supplies   | PO1001       | ITM001    | A4 Copy Paper      | CAT01         | 285.00     | 281.00             | 4.00          | 160.00            |
+-- | SUP004        | Northstar Components       | PO1005       | ITM007    | LED Panel 40W      | CAT04         | 1325.00    | 2565.00            | -1240.00      | -24800.00         |
+-- | SUP004        | Northstar Components       | PO1010       | ITM007    | LED Panel 40W      | CAT04         | 1295.00    | 2565.00            | -1270.00      | -19050.00         |
+-- | SUP002        | Vertex Tools & Hardware    | PO1002       | ITM004    | Drill Bit Set      | CAT02         | 1180.00    | 2696.25            | -1516.25      | -18195.00         |
+-- | SUP002        | Vertex Tools & Hardware    | PO1013       | ITM004    | Drill Bit Set      | CAT02         | 1165.00    | 2696.25            | -1531.25      | -15312.50         |
+-- | SUP002        | Vertex Tools & Hardware    | PO1002       | ITM003    | Cordless Drill     | CAT02         | 4250.00    | 2696.25            | 1553.75       | 12430.00          |
+-- | SUP003        | GreenField Office Mart     | PO1004       | ITM006    | Corrugated Box Large | CAT03       | 92.50      | 470.50             | -378.00       | -11340.00         |
+-- | SUP002        | Vertex Tools & Hardware    | PO1008       | ITM003    | Cordless Drill     | CAT02         | 4190.00    | 2696.25            | 1493.75       | 7468.75          |
+-- | SUP004        | Northstar Components       | PO1005       | ITM008    | Copper Cable 2.5mm | CAT04         | 3850.00    | 2565.00            | 1285.00       | 6425.00           |
+-- | SUP004        | Northstar Components       | PO1010       | ITM008    | Copper Cable 2.5mm | CAT04         | 3790.00    | 2565.00            | 1225.00       | 4900.00           |
+-- | SUP005        | Prime Industrial Packaging | PO1011       | ITM009    | Stretch Film       | CAT03         | 715.00     | 470.50             | 244.50        | 4890.00           |
 
 -- ============================================================================
 -- Evaluation notes
