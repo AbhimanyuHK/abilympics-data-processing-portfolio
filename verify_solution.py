@@ -54,7 +54,7 @@ def execute_sql_script(connection, path):
 
 def run_etl():
     """Load the ETL module from disk and execute its public main() function."""
-    namespace = {"__name__": "abilympics_ingest_module"}
+    # exec() does not automatically define __file__. The ETL module uses\n    # __file__ to resolve paths relative to its own location.\n    namespace = {\n        "__name__": "abilympics_ingest_module",\n        "__file__": str(ETL),\n    }
     source = ETL.read_text(encoding="utf-8")
     exec(compile(source, str(ETL), "exec"), namespace)
     status = namespace["main"]()
