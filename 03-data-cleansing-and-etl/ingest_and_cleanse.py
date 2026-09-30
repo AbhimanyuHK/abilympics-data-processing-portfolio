@@ -159,7 +159,10 @@ def get_or_insert(connection, table, key_column, key_value, insert_sql, values, 
         (key_value,),
     ).fetchone()
     if row:
-        if expected and tuple(row[1:]) != tuple(expected):
+        # The expected tuple contains the non-key attributes. Since all
+        # master-table keys are the second column after the surrogate ID,
+        # compare row[2:] rather than row[1:] (which still contains the key).
+        if expected and tuple(row[2:]) != tuple(expected):
             raise DataQualityError("conflicting master data for {}".format(key_value))
         return row[0], False
     cursor = connection.execute(insert_sql, values)
