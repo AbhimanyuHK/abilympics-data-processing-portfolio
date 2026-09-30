@@ -54,13 +54,17 @@ def execute_sql_script(connection, path):
 
 def run_etl():
     """Load the ETL module from disk and execute its public main() function."""
-    # exec() does not automatically define __file__. The ETL module uses\n    # __file__ to resolve paths relative to its own location.\n    namespace = {\n        "__name__": "abilympics_ingest_module",\n        "__file__": str(ETL),\n    }
+    # exec() does not automatically define __file__. The ETL module uses
+    # __file__ to resolve paths relative to its own location.
+    namespace = {
+        "__name__": "abilympics_ingest_module",
+        "__file__": str(ETL),
+    }
     source = ETL.read_text(encoding="utf-8")
     exec(compile(source, str(ETL), "exec"), namespace)
     status = namespace["main"]()
     if status != 0:
         raise VerificationError("ingest_and_cleanse.py returned {}".format(status))
-
 
 def scalar(connection, statement):
     return connection.execute(statement).fetchone()[0]
