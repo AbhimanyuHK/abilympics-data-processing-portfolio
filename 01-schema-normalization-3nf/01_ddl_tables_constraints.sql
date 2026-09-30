@@ -83,10 +83,10 @@ CREATE TABLE IF NOT EXISTS inventory_items (
 CREATE TABLE IF NOT EXISTS purchase_orders (
     purchase_order_id  INTEGER PRIMARY KEY AUTOINCREMENT,
     order_number       TEXT NOT NULL UNIQUE,
-    supplier_id       INTEGER NOT NULL,
-    order_date        TEXT NOT NULL,
-    delivery_date     TEXT,
-    order_status      TEXT NOT NULL DEFAULT 'PENDING',
+    supplier_id        INTEGER NOT NULL,
+    order_date         TEXT NOT NULL,
+    delivery_date      TEXT,
+    order_status       TEXT NOT NULL DEFAULT 'PENDING',
     CONSTRAINT fk_purchase_orders_supplier
         FOREIGN KEY (supplier_id)
         REFERENCES suppliers(supplier_id)
@@ -96,15 +96,21 @@ CREATE TABLE IF NOT EXISTS purchase_orders (
         CHECK (length(trim(order_number)) > 0),
     CONSTRAINT ck_purchase_orders_order_date
         CHECK (
-            order_date GLOB '____-__-__'
+            length(order_date) = 10
+            AND substr(order_date, 5, 1) = '-'
+            AND substr(order_date, 8, 1) = '-'
             AND date(order_date) IS NOT NULL
+            AND strftime('%Y-%m-%d', order_date) = order_date
         ),
     CONSTRAINT ck_purchase_orders_delivery_date
         CHECK (
             delivery_date IS NULL
             OR (
-                delivery_date GLOB '____-__-__'
+                length(delivery_date) = 10
+                AND substr(delivery_date, 5, 1) = '-'
+                AND substr(delivery_date, 8, 1) = '-'
                 AND date(delivery_date) IS NOT NULL
+                AND strftime('%Y-%m-%d', delivery_date) = delivery_date
                 AND delivery_date >= order_date
             )
         ),
