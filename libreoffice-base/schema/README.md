@@ -4,21 +4,26 @@ Use the same logical model as the SQL and Access tracks.
 
 ## Tables
 
-COUNTRY
+### COUNTRY
 - country_id — primary key
 - country_code — unique business key
 - country_name — unique
 
-MEMBER
+### MEMBER_STATUS
+- status_id — primary key
+- status_code — unique
+- status_name — unique
+
+### MEMBER
 - member_id — primary key
 - first_name
 - last_name
 - email — unique
 - country_id — foreign key
 - membership_date
-- status
+- status_id — foreign key to MEMBER_STATUS
 
-TRAVEL
+### TRAVEL
 - travel_id — primary key
 - destination
 - country_id — foreign key
@@ -26,12 +31,12 @@ TRAVEL
 - return_date
 - price
 
-AIRLINE
+### AIRLINE
 - airline_id — primary key
 - airline_name — unique
 - country_id — foreign key
 
-SCHEDULE
+### SCHEDULE
 - schedule_id — primary key
 - travel_id — foreign key
 - airline_id — foreign key
@@ -39,12 +44,17 @@ SCHEDULE
 - arrival_time
 - gate
 
-RESERVATION
+### RESERVATION_STATUS
+- status_id — primary key
+- status_code — unique
+- status_name — unique
+
+### RESERVATION
 - reservation_id — primary key
 - member_id — foreign key
 - schedule_id — foreign key
 - reservation_date
-- status
+- status_id — foreign key to RESERVATION_STATUS
 - seat_number
 
 ## Relationship map
@@ -52,9 +62,11 @@ RESERVATION
 COUNTRY 1:N MEMBER
 COUNTRY 1:N TRAVEL
 COUNTRY 1:N AIRLINE
+MEMBER_STATUS 1:N MEMBER
 TRAVEL 1:N SCHEDULE
 AIRLINE 1:N SCHEDULE
 MEMBER 1:N RESERVATION
 SCHEDULE 1:N RESERVATION
+RESERVATION_STATUS 1:N RESERVATION
 
 Target: normalized relational design with referential integrity.
