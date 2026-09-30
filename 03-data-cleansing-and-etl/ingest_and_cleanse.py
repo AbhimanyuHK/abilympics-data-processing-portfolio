@@ -436,6 +436,9 @@ def load(
             for row in reader:
                 stats["read"] += 1
                 source_row = stats["read"] + 1
+                savepoint = f"row_{source_row}"
+
+                connection.execute(f"SAVEPOINT {savepoint}")
 
                 try:
                     supplier_name, contact_name, supplier_email = parse_supplier(
@@ -520,6 +523,8 @@ def load(
                         ),
                     )
 
+                    connection.execute(f"RELEASE SAVEPOINT {savepoint}")
+
                     write_audit(
                         connection,
                         run_id,
@@ -532,6 +537,9 @@ def load(
                     stats["accepted"] += 1
 
                 except (ValueError, sqlite3.IntegrityError) as exc:
+                    connection.execute(f"ROLLBACK TO SAVEPOINT {savepoint}")
+                    connection.execute(f"RELEASE SAVEPOINT {savepoint}")
+
                     stats["rejected"] += 1
                     write_audit(
                         connection,
