@@ -29,6 +29,27 @@ The official 2027 Technical Description is scheduled for **November 2026**, and 
 
 Official reference: https://abilympics2027.com/en/skills-categories/ict/data-management-and-processing/
 
+## Abilympics Syllabus Mapping
+
+This table maps the repository's practical work to four core Data Management and Processing preparation areas.
+
+| Syllabus area | Repository implementation | Evidence |
+|---|---|---|
+| **Schema Design** | Relational model, entities, primary/foreign keys, constraints, indexes, relationship map | `database/schema/`, `database/relationships/`, `sql/schema.sql` |
+| **Relational Normalization** | 3NF-oriented design, dependency-aware table separation, PK/FK integrity and normalization exercises | `database/schema/travel-reservation-schema.md`, `practice/task-01/` |
+| **SQL Query Optimization** | Saved analytical queries, joins, aggregations, filtering, duplicate detection, validation queries, and indexed PostgreSQL schema | `sql/queries/`, `sql/validation/`, `sql/schema.sql` |
+| **Automated Ingestion/Reporting** | CSV ingestion workflow, dirty-data processing, validation/reconciliation, Excel reporting, DBMS reporting specifications, and reproducible processing flow | `datasets/`, `excel/`, `libreoffice-base/`, `access/`, `practice/mock-competition/` |
+
+### Navigation
+
+1. **Schema Design** → `database/schema/` → `database/relationships/` → `sql/schema.sql`
+2. **Relational Normalization** → `database/schema/travel-reservation-schema.md` → `practice/task-01/`
+3. **SQL Query Optimization** → `sql/queries/` → `sql/reports/` → `sql/validation/`
+4. **Automated Ingestion/Reporting** → `datasets/` → `excel/` → `libreoffice-base/` → `access/`
+5. **Timed Demonstration** → `practice/mock-competition/`
+
+> **Scope note:** “Automated Ingestion/Reporting” represents the repository's engineering-oriented preparation workflow. The competition-focused core remains DBMS design, data processing, queries, interfaces, validation, and reporting. The repository is independently developed practice material, not an official 2027 task.
+
 ## Repository Roadmap
 
 ### Phase 1 — Foundation
