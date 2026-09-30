@@ -1,24 +1,26 @@
-# Excel Processed Output
+# Processed Excel Track
 
-This directory is reserved for validated Excel outputs.
+The Excel track now includes a concrete practice workbook artifact.
 
-A competition-ready processed workbook should contain:
-1. Raw/source copy or protected source sheet
-2. Cleaned data
-3. Validation results
-4. Exception log
-5. Reconciliation checks
-6. Lookup/reference data
-7. Final analysis-ready table
+## Artifact
 
-## Acceptance checks
-- Required fields populated
-- Dates are valid and logically consistent
-- Foreign/reference values match approved lookup values
-- Duplicate keys identified
-- Numeric fields contain valid values
-- Standardized text follows defined rules
-- Source-to-output row counts are reconciled
-- Exceptions are traceable to source records
+- `reservation_competition_practice.xlsx`
+- Source → cleaning → validation → exceptions → reconciliation → reporting
+- Includes a dedicated `Dirty_Data_Drill` sheet for timed practice.
 
-Do not treat a workbook as complete until validation and reconciliation are documented.
+## Competition workflow
+
+1. Preserve source data.
+2. Profile before editing.
+3. Standardize deterministic issues.
+4. Validate required fields, references, status, numeric/date rules and duplicates.
+5. Record exceptions with traceability.
+6. Reconcile counts and totals.
+7. Build the final report only after validation.
+8. Perform a final quality-gate review.
+
+## Timed target
+
+35 minutes for the cleaning/reconciliation/reporting drill.
+
+The workbook is a personal preparation artifact and is not an official Abilympics task or scoring workbook.
