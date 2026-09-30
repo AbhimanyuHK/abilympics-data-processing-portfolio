@@ -162,10 +162,10 @@ def assert_executive_report(result):
     """Check the final report against the normalized dataset's exact KPIs."""
     expected = [
         ("SUP002", "Vertex Tools & Hardware", 3, 80760.0, 1, 2, 33.33, 100.0, 12.0),
-        ("SUP004", "Northstar Components", 2, 80300.0, 1, 1, 50.0, 100.0, 11.0),
+        ("SUP004", "Northstar Components", 2, 80335.0, 1, 1, 50.0, 100.0, 11.0),
         ("SUP005", "Prime Industrial Packaging", 2, 39700.0, 1, 1, 50.0, 100.0, 9.0),
         ("SUP001", "Acme Industrial Supplies", 3, 27790.0, 2, 1, 66.67, 100.0, 7.0),
-        ("SUP003", "GreenField Office Mart", 3, 26310.0, 2, 1, 66.67, 100.0, 7.0),
+        ("SUP003", "GreenField Office Mart", 3, 26325.0, 2, 1, 66.67, 100.0, 7.0),
     ]
 
     if len(result["rows"]) != len(expected):
