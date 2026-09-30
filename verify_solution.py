@@ -15,6 +15,10 @@ WINDOW = ROOT / "02-advanced-sql-processing" / "03_window_and_aggregations.sql"
 REPORT = ROOT / "04-reporting-and-business-intelligence" / "executive_summary_report.sql"
 
 
+GREEN = "\033[92m"
+RESET = "\033[0m"
+
+
 class VerificationError(Exception):
     """Raised when an evaluator-facing verification check fails."""
 
@@ -206,34 +210,34 @@ def main():
         connection.execute("PRAGMA foreign_keys = ON")
 
         assert_schema(connection)
-        print("[OK] SQLite schema and foreign-key enforcement")
+        print(GREEN + "[✓] SQLite schema and foreign-key enforcement" + RESET)
 
         assert_constraints(connection)
-        print("[OK] PK/FK/CHECK integrity tests")
+        print(GREEN + "[✓] PK/FK/CHECK integrity tests" + RESET)
 
         analytical_results = execute_sql_script(connection, ANALYTICAL)
         assert_result_sets(analytical_results, 1, "Complex analytical SQL")
         print(
-            "[OK] Complex analytical SQL: {} result sets".format(
+            GREEN + "[✓] Complex analytical SQL: {} result sets".format(
                 len(analytical_results)
-            )
+            ) + RESET
         )
 
         window_results = execute_sql_script(connection, WINDOW)
         assert_result_sets(window_results, 1, "Window SQL")
         print(
-            "[OK] Window/aggregation SQL: {} result sets".format(
+            GREEN + "[✓] Window/aggregation SQL: {} result sets".format(
                 len(window_results)
-            )
+            ) + RESET
         )
 
         report_results = execute_sql_script(connection, REPORT)
         assert_result_sets(report_results, 5, "Executive report")
         assert_executive_report(report_results[-1])
         print(
-            "[OK] Executive report: {} supplier rows".format(
+            GREEN + "[✓] Executive report: {} supplier rows".format(
                 len(report_results[-1]["rows"])
-            )
+            ) + RESET
         )
 
         status_counts = {
@@ -259,20 +263,20 @@ def main():
                 "status distribution mismatch: {}".format(status_counts)
             )
 
-        print("[OK] Purchase-order lifecycle distribution")
+        print(GREEN + "[✓] Purchase-order lifecycle distribution" + RESET)
         print()
         print("-" * 78)
         print(" TEST SUITE SUMMARY")
         print("-" * 78)
-        print("[OK] 20 raw procurement rows processed")
-        print("[OK] 5 suppliers / 5 categories / 11 inventory items")
-        print("[OK] 13 purchase orders / 20 order lines")
-        print("[OK] Referential integrity enforced")
-        print("[OK] Negative-price CHECK rejected")
-        print("[OK] Illegal-FK insertion rejected")
-        print("[OK] Analytical SQL executed")
-        print("[OK] Window SQL executed")
-        print("[OK] Executive report matched expected KPIs")
+        print(GREEN + "[✓] 20 raw procurement rows processed" + RESET)
+        print(GREEN + "[✓] 5 suppliers / 5 categories / 11 inventory items" + RESET)
+        print(GREEN + "[✓] 13 purchase orders / 20 order lines" + RESET)
+        print(GREEN + "[✓] Referential integrity enforced" + RESET)
+        print(GREEN + "[✓] Negative-price CHECK rejected" + RESET)
+        print(GREEN + "[✓] Illegal-FK insertion rejected" + RESET)
+        print(GREEN + "[✓] Analytical SQL executed" + RESET)
+        print(GREEN + "[✓] Window SQL executed" + RESET)
+        print(GREEN + "[✓] Executive report matched expected KPIs" + RESET)
         print("-" * 78)
         print(" STATUS: 100% OPERATIONAL")
         print("=" * 78)
